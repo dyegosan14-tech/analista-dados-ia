@@ -80,3 +80,55 @@ export function describeSchema(db: Database.Database): string {
   );
   return lines.join('\n');
 }
+
+export type StoreKpis = {
+  totalPedidos: number;
+  receitaTotal: number;
+  totalClientes: number;
+  totalProdutos: number;
+  ticketMedio: number;
+};
+
+export function getStoreKpis(db: Database.Database): StoreKpis {
+  try {
+    const result = db
+      .prepare(
+        `SELECT
+          (SELECT COUNT(*) FROM pedidos WHERE status != 'cancelado') as totalPedidos,
+          (SELECT ROUND(SUM(ip.quantidade * ip.preco_unitario), 2)
+             FROM itens_pedido ip
+             JOIN pedidos p ON p.id = ip.pedido_id
+            WHERE p.status != 'cancelado') as receitaTotal,
+          (SELECT COUNT(DISTINCT id) FROM clientes) as totalClientes,
+          (SELECT COUNT(DISTINCT id) FROM produtos) as totalProdutos`,
+      )
+      .get() as {
+        totalPedidos: number | null;
+        receitaTotal: number | null;
+        totalClientes: number | null;
+        totalProdutos: number | null;
+      };
+
+    const totalPedidos = result?.totalPedidos ?? 0;
+    const receitaTotal = result?.receitaTotal ?? 0;
+    const totalClientes = result?.totalClientes ?? 0;
+    const totalProdutos = result?.totalProdutos ?? 0;
+    const ticketMedio = totalPedidos > 0 ? Number((receitaTotal / totalPedidos).toFixed(2)) : 0;
+
+    return {
+      totalPedidos,
+      receitaTotal,
+      totalClientes,
+      totalProdutos,
+      ticketMedio,
+    };
+  } catch {
+    return {
+      totalPedidos: 0,
+      receitaTotal: 0,
+      totalClientes: 0,
+      totalProdutos: 0,
+      ticketMedio: 0,
+    };
+  }
+}

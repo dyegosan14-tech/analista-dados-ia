@@ -22,6 +22,7 @@
   ];
   const numberFmt = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 });
   let chartInstance = null;
+  let currentChartSpec = null;
   let currentId = null;
 
   if (window.Chart) {
@@ -100,20 +101,33 @@
       (truncated ? ' (resultado limitado ao máximo permitido)' : '');
   }
 
+  function updateChartButtons(activeType) {
+    document.querySelectorAll('.chart-type-btn').forEach((btn) => {
+      const active = btn.dataset.type === activeType;
+      btn.classList.toggle('bg-indigo-600', active);
+      btn.classList.toggle('text-white', active);
+      btn.classList.toggle('border-indigo-500', active);
+      btn.classList.toggle('bg-slate-800/60', !active);
+      btn.classList.toggle('text-slate-200', !active);
+      btn.classList.toggle('border-slate-700', !active);
+    });
+  }
+
   function renderChart(spec) {
     if (chartInstance) {
       chartInstance.destroy();
       chartInstance = null;
     }
+    currentChartSpec = spec ? { ...spec } : null;
     if (!spec || !window.Chart) {
       hide($('chart-wrap'));
       return;
     }
 
-    const isPie = spec.type === 'pie';
+    const isPieOrDoughnut = spec.type === 'pie' || spec.type === 'doughnut';
     const datasets = spec.datasets.map((ds, index) => {
       const color = PALETTE[index % PALETTE.length];
-      if (isPie) {
+      if (isPieOrDoughnut) {
         return {
           label: ds.label,
           data: ds.data,
@@ -136,6 +150,8 @@
     });
 
     show($('chart-wrap'));
+    updateChartButtons(spec.type);
+
     chartInstance = new Chart($('chart'), {
       type: spec.type,
       data: { labels: spec.labels, datasets },
@@ -143,7 +159,10 @@
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: isPie || datasets.length > 1, position: isPie ? 'right' : 'top' },
+          legend: {
+            display: isPieOrDoughnut || datasets.length > 1,
+            position: isPieOrDoughnut ? 'right' : 'top',
+          },
           tooltip: {
             callbacks: {
               label: (ctx) =>
@@ -153,7 +172,7 @@
             },
           },
         },
-        scales: isPie
+        scales: isPieOrDoughnut
           ? {}
           : { y: { beginAtZero: true, ticks: { callback: (v) => numberFmt.format(v) } } },
       },
@@ -319,6 +338,26 @@
       btn.textContent = 'Copiar SQL';
     }, 1500);
   });
+
+  document.querySelectorAll('.chart-type-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (!currentChartSpec) return;
+      const newType = btn.dataset.type;
+      renderChart({ ...currentChartSpec, type: newType });
+    });
+  });
+
+  const downloadBtn = $('download-chart');
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', () => {
+      const canvas = $('chart');
+      if (!canvas || !chartInstance) return;
+      const link = document.createElement('a');
+      link.download = 'grafico-' + (currentId ? currentId.slice(0, 8) : 'resultado') + '.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+  }
 
   loadHistory();
 })();
