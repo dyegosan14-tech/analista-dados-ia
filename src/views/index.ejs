@@ -17,6 +17,40 @@
 
     <main class="mx-auto grid max-w-6xl gap-6 px-4 py-6 lg:grid-cols-[1fr_280px]">
       <section class="min-w-0 space-y-5">
+        <% if (typeof kpis !== 'undefined') { %>
+        <!-- Resumo / KPIs Rápidos da Loja -->
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div class="card !p-4 border-slate-800/80 bg-slate-900/50">
+            <span class="text-xs font-medium text-slate-400">Receita Total</span>
+            <p class="mt-1 text-lg font-bold text-emerald-400">
+              R$ <%= Number(kpis.receitaTotal || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+            </p>
+            <span class="text-[11px] text-slate-500">Pedidos concluídos</span>
+          </div>
+          <div class="card !p-4 border-slate-800/80 bg-slate-900/50">
+            <span class="text-xs font-medium text-slate-400">Pedidos Válidos</span>
+            <p class="mt-1 text-lg font-bold text-indigo-400">
+              <%= Number(kpis.totalPedidos || 0).toLocaleString('pt-BR') %>
+            </p>
+            <span class="text-[11px] text-slate-500">Exclui cancelados</span>
+          </div>
+          <div class="card !p-4 border-slate-800/80 bg-slate-900/50">
+            <span class="text-xs font-medium text-slate-400">Ticket Médio</span>
+            <p class="mt-1 text-lg font-bold text-amber-400">
+              R$ <%= Number(kpis.ticketMedio || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+            </p>
+            <span class="text-[11px] text-slate-500">Por pedido</span>
+          </div>
+          <div class="card !p-4 border-slate-800/80 bg-slate-900/50">
+            <span class="text-xs font-medium text-slate-400">Clientes & Catálogo</span>
+            <p class="mt-1 text-lg font-bold text-sky-400">
+              <%= Number(kpis.totalClientes || 0) %> <span class="text-xs font-normal text-slate-400">cli.</span> / <%= Number(kpis.totalProdutos || 0) %> <span class="text-xs font-normal text-slate-400">prod.</span>
+            </p>
+            <span class="text-[11px] text-slate-500">Base cadastrada</span>
+          </div>
+        </div>
+        <% } %>
+
         <form id="ask-form" class="card space-y-3">
           <label for="question" class="text-sm font-medium text-slate-300">Sua pergunta</label>
           <textarea id="question" name="question" rows="2" maxlength="500" required
@@ -46,7 +80,19 @@
             <p id="result-answer" class="mt-2 whitespace-pre-wrap text-base leading-relaxed text-slate-100"></p>
           </div>
 
-          <div id="chart-wrap" class="hidden">
+          <div id="chart-wrap" class="hidden space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2">
+              <div class="flex flex-wrap items-center gap-1.5 text-xs">
+                <span class="mr-1 text-slate-400 font-medium">Visualização:</span>
+                <button type="button" class="chart-type-btn rounded px-2.5 py-1 text-xs font-medium border border-slate-700 bg-slate-800/60 hover:bg-slate-700 text-slate-200 transition" data-type="bar">📊 Barras</button>
+                <button type="button" class="chart-type-btn rounded px-2.5 py-1 text-xs font-medium border border-slate-700 bg-slate-800/60 hover:bg-slate-700 text-slate-200 transition" data-type="line">📈 Linha</button>
+                <button type="button" class="chart-type-btn rounded px-2.5 py-1 text-xs font-medium border border-slate-700 bg-slate-800/60 hover:bg-slate-700 text-slate-200 transition" data-type="pie">🥧 Pizza</button>
+                <button type="button" class="chart-type-btn rounded px-2.5 py-1 text-xs font-medium border border-slate-700 bg-slate-800/60 hover:bg-slate-700 text-slate-200 transition" data-type="doughnut">🍩 Rosca</button>
+              </div>
+              <button id="download-chart" type="button" class="btn btn-ghost !px-3 !py-1 text-xs">
+                📸 Baixar Imagem
+              </button>
+            </div>
             <div class="relative h-72 w-full"><canvas id="chart" aria-label="Gráfico do resultado" role="img"></canvas></div>
           </div>
 

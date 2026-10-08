@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import { getReadonlyDb } from '../db/connection';
+import { getStoreKpis } from '../db/schema';
 import { requireAuthPage } from '../middleware/requireAuth';
 
 export const pagesRouter = Router();
@@ -13,5 +15,6 @@ export const SUGGESTED_QUESTIONS = [
 ];
 
 pagesRouter.get('/', requireAuthPage, (req, res) => {
-  res.render('index', { user: req.session.user, suggestions: SUGGESTED_QUESTIONS });
+  const kpis = getStoreKpis(getReadonlyDb());
+  res.render('index', { user: req.session.user, suggestions: SUGGESTED_QUESTIONS, kpis });
 });

@@ -1,5 +1,11 @@
 # 📊 Analista de Dados com IA
 
+[![CI](https://github.com/dyegosan14-tech/analista-dados-ia/actions/workflows/ci.yml/badge.svg)](https://github.com/dyegosan14-tech/analista-dados-ia/actions)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)
+![Node](https://img.shields.io/badge/Node.js-20%2B-green?logo=node.js)
+![Tests](https://img.shields.io/badge/Tests-57%20passing-brightgreen?logo=vitest)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+
 Aplicação web em que você **pergunta em português** sobre os dados de uma loja e recebe a **resposta em texto, tabela e gráfico**. Por trás, um agente de IA (Claude, via _tool use_) escreve a consulta SQL, o servidor **valida e executa em modo somente leitura**, e a IA interpreta o resultado.
 
 > Projeto de portfólio. Todos os dados são **fictícios** (loja de enxoval e casa, 12 meses de vendas).
@@ -11,13 +17,14 @@ Aplicação web em que você **pergunta em português** sobre os dados de uma lo
 
 ## O que ele faz
 
-1. Você digita (ou clica numa sugestão): _"Como evoluiu a receita mês a mês?"_
-2. A IA recebe o schema do banco e chama a ferramenta `executar_sql`.
-3. O servidor **valida** a SQL, executa em conexão **somente leitura**, com limite de linhas e tempo.
-4. A IA lê o resultado e escreve uma resposta curta.
-5. A interface mostra **texto + tabela + gráfico** (barra, linha ou pizza, escolhido automaticamente) e o painel **"Ver SQL gerada"**.
+1. Você visualiza **KPIs gerais da loja** (receita, volume de pedidos, ticket médio e clientes/produtos).
+2. Você digita (ou clica numa sugestão): _"Como evoluiu a receita mês a mês?"_
+3. A IA recebe o schema do banco e chama a ferramenta `executar_sql`.
+4. O servidor **valida** a SQL, executa em conexão **somente leitura**, com limite de linhas e tempo.
+5. A IA lê o resultado e escreve uma resposta curta.
+6. A interface mostra **texto + tabela + gráfico interativo** (com alternador entre barras, linha, pizza e rosca, download do gráfico em PNG) e o painel **"Ver SQL gerada"**.
 
-Recursos: sugestões clicáveis · histórico das últimas 10 perguntas da sessão · exportação CSV (pronto para o Excel em pt-BR) · estados de carregamento e erros amigáveis · login com sessão.
+Recursos: KPIs da loja no topo · sugestões clicáveis · alternador interativo de tipo de gráfico · download de gráficos em PNG · histórico das últimas 10 perguntas da sessão · exportação CSV (pronto para o Excel em pt-BR) · estados de carregamento e erros amigáveis · login com sessão.
 
 ## Stack
 
