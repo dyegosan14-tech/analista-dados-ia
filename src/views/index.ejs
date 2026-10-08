@@ -1,0 +1,87 @@
+<%- include('partials/head', {}) %>
+    <header class="border-b border-slate-800 bg-slate-900/60">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl" aria-hidden="true">📊</span>
+          <div>
+            <h1 class="text-lg font-semibold leading-tight">Analista de Dados com IA</h1>
+            <p class="text-xs text-slate-400">Pergunte sobre as vendas da loja em linguagem natural</p>
+          </div>
+        </div>
+        <form method="post" action="/logout" class="flex items-center gap-3">
+          <span class="hidden text-sm text-slate-400 sm:inline">Olá, <%= user %></span>
+          <button type="submit" class="btn btn-ghost">Sair</button>
+        </form>
+      </div>
+    </header>
+
+    <main class="mx-auto grid max-w-6xl gap-6 px-4 py-6 lg:grid-cols-[1fr_280px]">
+      <section class="min-w-0 space-y-5">
+        <form id="ask-form" class="card space-y-3">
+          <label for="question" class="text-sm font-medium text-slate-300">Sua pergunta</label>
+          <textarea id="question" name="question" rows="2" maxlength="500" required
+            placeholder="Ex.: Quais foram os 5 produtos mais vendidos em março?"
+            class="w-full resize-none rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-indigo-400"></textarea>
+          <div class="flex items-center justify-between gap-3">
+            <span class="text-xs text-slate-500">Enter envia · Shift+Enter quebra linha</span>
+            <button id="ask-button" type="submit" class="btn btn-primary">Perguntar</button>
+          </div>
+
+          <div class="border-t border-slate-800 pt-3">
+            <p class="mb-2 text-xs uppercase tracking-wide text-slate-500">Sugestões</p>
+            <div class="flex flex-wrap gap-2">
+              <% suggestions.forEach(function (s) { %>
+                <button type="button" class="suggestion rounded-full border border-slate-700 bg-slate-800/60 px-3 py-1 text-xs text-slate-200 transition hover:border-indigo-400 hover:bg-slate-800"
+                  data-question="<%= s %>"><%= s %></button>
+              <% }) %>
+            </div>
+          </div>
+        </form>
+
+        <div id="status" class="hidden" role="status" aria-live="polite"></div>
+
+        <article id="result" class="card hidden space-y-5" aria-live="polite">
+          <div>
+            <p id="result-question" class="text-xs uppercase tracking-wide text-slate-500"></p>
+            <p id="result-answer" class="mt-2 whitespace-pre-wrap text-base leading-relaxed text-slate-100"></p>
+          </div>
+
+          <div id="chart-wrap" class="hidden">
+            <div class="relative h-72 w-full"><canvas id="chart" aria-label="Gráfico do resultado" role="img"></canvas></div>
+          </div>
+
+          <div id="table-wrap" class="hidden">
+            <div class="mb-2 flex items-center justify-between">
+              <p id="table-info" class="text-xs text-slate-500"></p>
+              <a id="csv-link" href="#" class="btn btn-ghost !px-3 !py-1 text-xs">⬇ Exportar CSV</a>
+            </div>
+            <div class="max-h-96 overflow-auto rounded-lg border border-slate-800">
+              <table id="table" class="min-w-full text-left text-sm"></table>
+            </div>
+          </div>
+
+          <details id="sql-wrap" class="hidden rounded-lg border border-slate-800 bg-slate-950/60">
+            <summary class="cursor-pointer select-none px-4 py-2 text-sm text-slate-300 hover:text-white">Ver SQL gerada</summary>
+            <div class="border-t border-slate-800 p-4">
+              <pre class="overflow-x-auto whitespace-pre-wrap text-xs leading-relaxed text-emerald-300"><code id="sql-code"></code></pre>
+              <button id="copy-sql" type="button" class="btn btn-ghost mt-3 !px-3 !py-1 text-xs">Copiar SQL</button>
+              <p class="mt-3 text-xs text-slate-500">Executada em modo somente leitura, com limite de linhas e tempo.</p>
+            </div>
+          </details>
+        </article>
+      </section>
+
+      <aside class="space-y-3">
+        <div class="card">
+          <h2 class="text-sm font-semibold text-slate-200">Histórico da sessão</h2>
+          <p id="history-empty" class="mt-2 text-xs text-slate-500">Suas últimas perguntas aparecem aqui.</p>
+          <ul id="history-list" class="mt-2 space-y-1"></ul>
+        </div>
+        <p class="px-1 text-xs text-slate-600">Dados fictícios de uma loja de enxoval e casa (12 meses).</p>
+      </aside>
+    </main>
+
+    <script src="/vendor/chartjs/chart.umd.js"></script>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
