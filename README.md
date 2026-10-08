@@ -152,7 +152,13 @@ Em produção o servidor se recusa a iniciar com a senha ou o segredo de sessão
 - Perguntas de acompanhamento com contexto ("agora só no Nordeste").
 - Conectar a bancos reais (PostgreSQL/SQL Server) com usuário de leitura e _views_ curadas.
 - Cache de perguntas repetidas e métricas de custo/latência por consulta.
-- Testes de interface com Playwright.
+## 🤖 Avaliação e Otimizações com IA
+
+Este projeto passou por revisão de código, validação de uso ponta a ponta e implementação de melhorias assistidas pelo **Google Gemini (versão Gemini 3.8 Flash)**:
+- **Diagnóstico de arquitetura e segurança**: revisão das camadas de segurança de SQL e testes de usabilidade em navegador.
+- **Dashboard de KPIs executivos**: adição de métricas analíticas em tempo real no topo da interface (Receita Total, Pedidos Concluídos, Ticket Médio e Catálogo).
+- **Ferramentas visuais expandidas**: inclusão de alternador interativo de tipo de gráfico (Barras, Linha, Pizza, Rosca) e exportação de imagem do gráfico em PNG.
+- **Pipeline de CI/CD**: configuração do GitHub Actions com 57 testes automatizados passando e build estrito de TypeScript.
 
 ## Autor
 
